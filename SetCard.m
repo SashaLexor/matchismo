@@ -46,18 +46,8 @@
 
 -(NSString *)description
 {
-    NSMutableString *str = [NSMutableString stringWithString:@[@"☐", @"△", @"○"][self.shape]];
-    for (int i = 0; i < self.amount-1; i++)
-    {
-        str = [[str stringByAppendingString:@[@"☐", @"△", @"○"][self.shape]]mutableCopy];
-    }
-    if (self.color == 0) [str appendString:@" Color: GREEN "];
-    if (self.color == 1) [str appendString:@" Color: RED "];
-    if (self.color == 2) [str appendString:@" Color: BLUE "];
-    
-    [str appendString:[NSString stringWithFormat:@"Shade = %d",self.shade]];
-
-    
+    NSMutableString *str = [NSMutableString stringWithFormat:@"Amount = %d Shape = %d Color = %d Shade = %d",self.amount, self.shape, self.color, self.shade];
+        
     return str;
     
 }
