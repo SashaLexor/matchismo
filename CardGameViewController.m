@@ -7,14 +7,13 @@
 //
 
 #import "CardGameViewController.h"
-#import "PlayingDeck.h"
 #import "CardMatchingGame.h"
 
-@interface CardGameViewController ()
+@interface CardGameViewController () <UICollectionViewDataSource>
 
 
+@property (weak, nonatomic) IBOutlet UICollectionView *cardCollectionView;
 @property (weak, nonatomic) IBOutlet UILabel *storyLable;
-@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
 @property (nonatomic) int flipCount;
 @property (strong, nonatomic) CardMatchingGame *game; // свойство модели игры
 @property (weak, nonatomic) IBOutlet UILabel *scoreLable;
@@ -24,6 +23,31 @@
 
 @implementation CardGameViewController
 
+
+-(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return self.startingCardCount;
+}
+
+-(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                 cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PlayingCard" forIndexPath:indexPath];
+    Card *card = [self.game cardAtIndex:indexPath.item];
+    [self updateCell:cell usingCard:card];
+    return cell;
+}
+
+-(void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card
+{
+    // ABSTRACT
+}
+
 - (IBAction)startNewGame
 {
     UIAlertView *newGameMessage = [[UIAlertView alloc]initWithTitle:@"Start new game" message:@"Do you want to start a new game?" delegate:self cancelButtonTitle:@"No, thanks" otherButtonTitles:@"Yes", nil];
@@ -32,13 +56,18 @@
     
 }
 
+-(Deck *)createDeck /// TEMP ABSTRACT 
+{
+    return nil;
+}
+
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1)
     {
         self.gameModeControl.enabled = YES;
-        self.game = [[CardMatchingGame alloc]initWhitCardCount:self.cardButtons.count
-                                                     usingDeck:[[PlayingDeck alloc]init]];
+        self.game = [[CardMatchingGame alloc]initWhitCardCount:self.startingCardCount
+                                                     usingDeck:[self createDeck]];
         self.game.endOfTheGame = YES;
         if (self.gameModeControl.selectedSegmentIndex == 0)
         {
@@ -50,25 +79,18 @@
             NSLog(@"3 card mode");
             self.game.threeCardMode = YES;
         }
+                     
         [self updateUI];
     }
 }
+
 
 -(void)viewDidLoad
 {
     self.gameModeControl.enabled = YES;
     [self updateUI];
     //UIImage *fon = [UIImage imageNamed:@"fon.jpg"];
-    UIImage *cardBack = [UIImage imageNamed:@"cardBack.jpg"];
-    UIImage *cardTop = [UIImage imageNamed:@"cardTop.jpg"];
     
-    //[self.view setBackgroundColor:[UIColor colorWithPatternImage:fon]];
-    for (UIButton *button in self.cardButtons)
-    {
-        [button setBackgroundImage:cardBack forState:UIControlStateNormal];
-        [button setBackgroundImage:cardTop forState:UIControlStateSelected];
-        [button setBackgroundImage:cardTop forState:UIControlStateDisabled];
-    }
 }
 - (IBAction)switchGameMode:(id)sender
 {
@@ -89,39 +111,26 @@
 {
     if (!_game)
     {
-        _game = [[CardMatchingGame alloc]initWhitCardCount:self.cardButtons.count
-                                                 usingDeck:[[PlayingDeck alloc]init]];// Deck создаем на лету, количество кард равно количеству кард-кнопок на view
+        _game = [[CardMatchingGame alloc]initWhitCardCount:self.startingCardCount
+                                                 usingDeck:[self createDeck]];// Deck создаем на лету, количество кард равно количеству кард-кнопок на view
         _game.endOfTheGame = YES;
     }
     return _game;
 }
 
--(void)setCardButtons:(NSArray *)cardButtons
-{
-    _cardButtons = cardButtons;
-    [self updateUI];
-}
 
 
 - (IBAction)flipCard:(UIButton *)sender
 {
+    int index = 0; /// TEMP
+    
     self.gameModeControl.enabled = NO;
-    [self.game flipCardAtIndex:[self.cardButtons indexOfObject:sender]]; // модель занимается переворачиванием
+    [self.game flipCardAtIndex:index]; // модель занимается переворачиванием
     [self updateUI]; // каждай раз как переворачиваем карту надо обновить интерфейс
 }
 
 -(void)updateUI // метод обновления интерфейся для синхронизации изменений в модели
 {
-    for (UIButton *cardButton in self.cardButtons) // проходим по массиву кнопок-кард
-    {
-        Card *card = [self.game cardAtIndex:[self.cardButtons indexOfObject:cardButton]];  // получаем карту для каждой кнопки
-        [cardButton setTitle:card.content forState:UIControlStateSelected]; 
-        [cardButton setTitle:card.content forState:UIControlStateSelected | UIControlStateDisabled];// устанавливаем Title = полученной карте из модели для состояний
-        cardButton.selected = card.isFaceUp;
-        cardButton.enabled = !card.isUnPlayable;
-        cardButton.alpha = card.isUnPlayable ? 0.5 : 1.0;
-        
-    }
     self.scoreLable.text = [NSString stringWithFormat:@"Score: %d",self.game.score];
     self.storyLable.text = [self.game.story lastObject];
     
