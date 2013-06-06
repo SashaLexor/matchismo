@@ -39,23 +39,20 @@
     [[UIColor whiteColor]setFill]; // устанавливаем цвет для последующей операции заливки
     UIRectFill(self.bounds); // C функция которая заливает цветом заданную область
     
-//    if (self.faceUp)
-//    {
-//        roundedRect.lineWidth = self.bounds.size.width/100 * 4;
-//        [[UIColor colorWithRed:1 green:0.3 blue:0.6 alpha:1]setStroke];
-//        [roundedRect stroke];
-//
-//        NSLog(@"FACE UP IN CARD view");
-//    }
-//    else
-//    {
-//        [[UIColor blackColor]setStroke]; // устанавливаем цвет для "границы"
-//        [roundedRect stroke]; // отрисовка "границы"
-//    }
-    
-    [[UIColor blackColor]setStroke]; // устанавливаем цвет для "границы"
-    [roundedRect stroke]; // отрисовка "границы"
+    if (self.faceUp)
+    {
+        roundedRect.lineWidth = self.bounds.size.width/100 * 8;
+        [[UIColor colorWithRed:1 green:0.3 blue:0.6 alpha:1]setStroke];
+        [roundedRect stroke];
 
+        NSLog(@"FACE UP IN CARD view");
+    }
+    else
+    {
+        [[UIColor blackColor]setStroke]; // устанавливаем цвет для "границы"
+        roundedRect.lineWidth = self.bounds.size.width/100 * 3;
+        [roundedRect stroke]; // отрисовка "границы"
+    }
 }
 
 -(void)setup

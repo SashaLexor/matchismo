@@ -115,8 +115,6 @@
 {
     self.gameModeControl.enabled = YES;
     [self updateUI];
-    
-    NSLog(@"View did load");
 }
 - (IBAction)switchGameMode:(id)sender
 {

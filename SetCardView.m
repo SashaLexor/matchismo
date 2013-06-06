@@ -135,6 +135,8 @@
             [path addLineToPoint:CGPointMake(startX - 35 * boundsX, startY + 10 * boundsY)];
             [path closePath];
             
+            path.lineWidth = 2.0;
+            
             [fillColor setFill];
             [strokeColor setStroke];
             
@@ -156,6 +158,8 @@
                 [path addLineToPoint:CGPointMake(startX, startY + 20 * boundsY)];
                 [path addLineToPoint:CGPointMake(startX - 35 * boundsX, startY + 10 * boundsY)];
                 [path closePath];
+                
+                path.lineWidth = 2.0;
                 
                 [fillColor setFill];
                 [strokeColor setStroke];
@@ -181,6 +185,8 @@
                 [path addLineToPoint:CGPointMake(startX, startY + 20 * boundsY)];
                 [path addLineToPoint:CGPointMake(startX - 35 * boundsX, startY + 10 * boundsY)];
                 [path closePath];
+                
+                path.lineWidth = 2.0;
                 
                 [fillColor setFill];
                 [strokeColor setStroke];
@@ -212,6 +218,8 @@
             [path addCurveToPoint:CGPointMake(startX + 70 * boundsX, startY - 5 * boundsY) controlPoint1:CGPointMake(startX + 30 * boundsX, startY - 30 * boundsY) controlPoint2:CGPointMake(startX + 40 * boundsX, startY + 10 * boundsY)];
             [path addCurveToPoint:CGPointMake(startX, startY) controlPoint1: CGPointMake(startX + 40 * boundsX, startY + 30 * boundsY) controlPoint2:CGPointMake(startX + 30 * boundsX, startY - 10 * boundsY)];
             
+            path.lineWidth = 2.0;
+            
             [fillColor setFill];
             [strokeColor setStroke];
             
@@ -232,6 +240,8 @@
                 
                 [path addCurveToPoint:CGPointMake(startX + 70 * boundsX, startY - 5 * boundsY) controlPoint1:CGPointMake(startX + 30 * boundsX, startY - 30 * boundsY) controlPoint2:CGPointMake(startX + 40 * boundsX, startY + 10 * boundsY)];
                 [path addCurveToPoint:CGPointMake(startX, startY) controlPoint1: CGPointMake(startX + 40 * boundsX, startY + 30 * boundsY) controlPoint2:CGPointMake(startX + 30 * boundsX, startY - 10 * boundsY)];
+                
+                path.lineWidth = 2.0;
                 
                 [fillColor setFill];
                 [strokeColor setStroke];
@@ -255,6 +265,8 @@
                 
                 [path addCurveToPoint:CGPointMake(startX + 70 * boundsX, startY - 5 * boundsY) controlPoint1:CGPointMake(startX + 30 * boundsX, startY - 30 * boundsY) controlPoint2:CGPointMake(startX + 40 * boundsX, startY + 10 * boundsY)];
                 [path addCurveToPoint:CGPointMake(startX, startY) controlPoint1: CGPointMake(startX + 40 * boundsX, startY + 30 * boundsY) controlPoint2:CGPointMake(startX + 30 * boundsX, startY - 10 * boundsY)];
+                
+                path.lineWidth = 2.0;
                 
                 [fillColor setFill];
                 [strokeColor setStroke];

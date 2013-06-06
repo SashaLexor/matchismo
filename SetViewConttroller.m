@@ -8,20 +8,70 @@
 
 #import "SetViewConttroller.h"
 #import "SetDeck.h"
+#import "SetCard.h"
+#import "SetCardCollectionViewCell.h"
 
 @interface SetViewConttroller ()
 
 @property (nonatomic) SetDeck *deck;
+@property (nonatomic) NSInteger startingCardCount;
 
 @end
 
 @implementation SetViewConttroller
 
+-(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return self.startingCardCount;
+}
+
+-(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                 cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"SetCard" forIndexPath:indexPath];
+    SetCard *card = [self.game cardAtIndex:indexPath.item];
+    [self updateCell:cell usingCard:card];
+    return cell;
+}
+
+
+-(void)updateCell:(UICollectionViewCell *)cell usingCard:(SetCard *)card
+{
+    
+    if ([cell isKindOfClass:[SetCardCollectionViewCell class]])
+    {
+        SetCardView *setCardView = ((SetCardCollectionViewCell *)cell).setCardView;
+        if ([card isKindOfClass:[SetCard class]])
+        {
+            SetCard *setCard = (SetCard *)card;
+            setCardView.amount = setCard.amount;
+            setCardView.shape = setCard.shape;
+            setCardView.shade = setCard.shade;
+            setCardView.color = setCard.color;
+            setCardView.faceUp = setCard.faceUp;
+            setCardView.alpha = setCard.isUnPlayable ? 0.3 : 1.0 ;
+            
+        }
+    }
+}
+
+
+
+-(NSInteger)startingCardCount
+{
+    return 24;
+}
+
 -(SetGame *)game
 {
     if (!_game)
     {
-        _game = [[SetGame alloc]initWhitCardCount:24 usingDeck:self.deck];
+        _game = [[SetGame alloc]initWhitCardCount:self.startingCardCount usingDeck:self.deck];
     }
     return _game;
 }
@@ -72,42 +122,21 @@
     
     
     [self updateUI];
-    
-    UIImage *cardTop = [UIImage imageNamed:@"setCardSelected"];
-    UIImage *cardBack = [UIImage imageNamed:@"setCard"];
-
-    
-    //[self.view setBackgroundColor:[UIColor colorWithPatternImage:fon]];
-    for (UIButton *button in self.arrayOfButtons)
-    {
-        [button setBackgroundImage:cardTop forState:UIControlStateSelected];
-        [button setBackgroundImage:cardBack forState:UIControlStateNormal];
-        [button setBackgroundImage:cardBack forState:UIControlStateDisabled];
-    }
 }
 
 -(void)updateUI // метод обновления интерфейся для синхронизации изменений в модели
 {
-    int indexOfCardButton;
-    for (UIButton *cardButton in self.arrayOfButtons) // проходим по массиву кнопок-кард
-    {
-        SetCard *card = [self.game cardAtIndex:[self.arrayOfButtons indexOfObject:cardButton]];
-        
-        indexOfCardButton = [self.arrayOfButtons indexOfObject:cardButton];  // получаем карту для каждой кнопки
-        
-        [cardButton setAttributedTitle:[self contentOfCardAtIndex:indexOfCardButton] forState:UIControlStateNormal];
-
-        [cardButton setAttributedTitle:[self contentOfCardAtIndex:indexOfCardButton] forState:UIControlStateSelected];
-        [cardButton setAttributedTitle:[self contentOfCardAtIndex:indexOfCardButton] forState:UIControlStateSelected | UIControlStateDisabled];// устанавливаем Title = полученной карте из модели для состояний
-        cardButton.selected = card.isFaceUp;
-        cardButton.enabled = !card.isUnPlayable;
-        cardButton.alpha = card.isUnPlayable ? 0.2 : 1.0;
-        
-     
-        
-    }
     
-    NSLog(@"Numder of cards = %d",indexOfCardButton + 1);
+    // Update code using collectionViewCell
+    
+    for (UICollectionViewCell *cell in [self.cardCollectionView visibleCells])
+    {
+        NSIndexPath *path = [self.cardCollectionView indexPathForCell:cell];
+        SetCard *card = [self.game cardAtIndex:path.item];
+        [self updateCell:cell usingCard:card];
+    }
+
+    
     self.scoreLable.text = [NSString stringWithFormat:@"Score: %d",self.game.score];
     self.storyLable.attributedText = [self.game.story lastObject];
     
@@ -141,11 +170,17 @@
 }
 
 
-- (IBAction)flipCard:(UIButton *)sender
+- (IBAction)flipCard:(UITapGestureRecognizer *)gesture
 {
-    [self.game flipCardAtIndex:[self.arrayOfButtons indexOfObject:sender]]; // модель занимается переворачиванием
-    [self updateUI]; // каждай раз как переворачиваем карту надо обновить интерфейс
-
+    CGPoint tapLocation = [gesture locationInView:self.cardCollectionView];
+    NSIndexPath *index = [self.cardCollectionView indexPathForItemAtPoint:tapLocation];
+    
+    if (index)
+    {
+        [self.game flipCardAtIndex:index.item]; // модель занимается переворачиванием
+        [self updateUI]; // каждай раз как переворачиваем карту надо обновить интерфейс
+    }
+    
     
 }
 @end
