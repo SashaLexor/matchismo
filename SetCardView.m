@@ -13,11 +13,6 @@
 -(void)setup
 {
     //do initialization here
-    self.shape = 2;
-    self.amount = 3;
-    self.color = 1;
-    self.shade = 1;
-    self.faceUp = YES;
 }
 
 -(void)awakeFromNib  // метод который вызывается автоматически после инициализации объектов из NIB-файла,

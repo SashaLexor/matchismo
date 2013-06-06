@@ -25,7 +25,6 @@
 {
  // Drawing code
     [super drawRect:rect];
-    
     if (self.faceUp)
     {
         UIImage *faceImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@", [self rankAsString], self.suit]];
@@ -103,9 +102,7 @@
 -(void)setup
 {
     //do initialization here
-    self.rank = 12;
-    self.suit = @"♥";
-    self.faceUp = YES;
+    
 }
 
 -(void)awakeFromNib  // метод который вызывается автоматически после инициализации объектов из NIB-файла,
