@@ -10,19 +10,6 @@
 
 @implementation SetCard
 
--(id)initWithDefault
-{
-    self = [super init];
-    if (self)
-    {
-        self.shape = 0;
-        self.amount = 3;
-        self.shade = 0;
-        self.color = 2;
-    }
-    return self;
-}
-
 +(int) maxAmount
 {
     return 3;

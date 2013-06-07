@@ -7,9 +7,6 @@
 //
 
 #import "Deck.h"
-@interface Deck()
-@property (strong,nonatomic) NSMutableArray *cards; //Массив с объектами Card (колода)
-@end
 
 @implementation Deck
 

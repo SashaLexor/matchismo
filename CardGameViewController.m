@@ -27,16 +27,17 @@
 
 @implementation CardGameViewController
 
-
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
     return 1;
 }
 
+
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     return self.startingCardCount;
 }
+
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                  cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -47,34 +48,17 @@
     return cell;
 }
 
+
 -(int)startingCardCount
 {
-    return 20;
+    return 0;
 }
 
--(Deck *)createDeck
-{
-    return [[PlayingDeck alloc]init];
-}
 
--(void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card
-{
-    
-    NSLog(@"%@",card);
-    if ([cell isKindOfClass:[PlayingCardCollectionViewCell class]])
-    {
-        PlayingCardView *playingCardView = ((PlayingCardCollectionViewCell *)cell).playingCardView;
-        if ([card isKindOfClass:[PlayingCard class]])
-        {
-            PlayingCard *playingCard = (PlayingCard *)card;
-            playingCardView.rank = playingCard.rank;
-            playingCardView.suit = playingCard.suit;
-            playingCardView.faceUp = playingCard.faceUp;
-            playingCardView.alpha = playingCard.isUnPlayable ? 0.3 : 1.0 ;
-            
-        }
-    }
-}
+-(Deck *)createDeck {return nil; } //abstract
+
+
+-(void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card { }// abstract
 
 
 - (IBAction)startNewGame
@@ -84,7 +68,6 @@
     
     
 }
-
 
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -116,6 +99,8 @@
     self.gameModeControl.enabled = YES;
     [self updateUI];
 }
+
+
 - (IBAction)switchGameMode:(id)sender
 {
     if (self.gameModeControl.selectedSegmentIndex == 0)
@@ -131,6 +116,7 @@
 
 }
 
+
 -(CardMatchingGame *)game // layzy instantiation of game property
 {
     if (!_game)
@@ -141,7 +127,6 @@
     }
     return _game;
 }
-
 
 
 - (IBAction)flipCard:(UITapGestureRecognizer *)gesture

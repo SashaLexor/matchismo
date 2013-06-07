@@ -15,6 +15,6 @@
 
 +(NSArray *)validSuits;
 +(NSUInteger)maxRank;
-
 -(NSString *)content;
+
 @end
