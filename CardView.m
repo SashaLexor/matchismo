@@ -14,7 +14,6 @@
 {
     _faceUp = faceUp;
     [self setNeedsDisplay];  // перерисовка view после изменения
-    NSLog(@"CARD IS FACe UP");
 }
 
 
@@ -44,8 +43,6 @@
         roundedRect.lineWidth = self.bounds.size.width/100 * 8;
         [[UIColor colorWithRed:1 green:0.3 blue:0.6 alpha:1]setStroke];
         [roundedRect stroke];
-
-        NSLog(@"FACE UP IN CARD view");
     }
     else
     {

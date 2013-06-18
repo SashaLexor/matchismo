@@ -10,17 +10,15 @@
 #import "SetCard.h"
 #import "SetGame.h"
 
-@interface SetViewConttroller : UIViewController <UIAlertViewDelegate, UICollectionViewDataSource>
+@interface SetViewConttroller : UIViewController <UIAlertViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
 
-@property (weak, nonatomic) IBOutlet UILabel *storyLable;
 @property (weak, nonatomic) IBOutlet UILabel *scoreLable;
 @property (strong, nonatomic) SetGame *game;
 @property (weak, nonatomic) IBOutlet UICollectionView *cardCollectionView;
 
 - (IBAction)startNewGame;
-+(NSArray *)validColor;
-+(NSArray *)validShape;
+
 
 
 @end

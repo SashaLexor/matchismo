@@ -64,7 +64,7 @@
 
 -(NSInteger)startingCardCount
 {
-    return 24;
+    return 12;
 }
 
 -(SetGame *)game
@@ -85,35 +85,6 @@
     return _deck;
 }
 
-+(NSArray *)validColor
-{
-    return @[[UIColor greenColor], [UIColor redColor], [UIColor blueColor]];
-}
-
-+(NSArray *)validShape
-{
-    return @[@"■", @"▲", @"●"];
-}
-
--(NSAttributedString *)contentOfCardAtIndex:(int) index
-{
-    float alpha = 0.0;
-    NSMutableString *str = [NSMutableString stringWithString:[SetViewConttroller validShape][[self.game cardAtIndex:index].shape]];
-    
-    for (int i = 1; i < [self.game cardAtIndex:index].amount; i++)
-    {
-        str = [[str stringByAppendingString:[SetViewConttroller validShape][[self.game cardAtIndex:index].shape]]mutableCopy];
-    }
-    
-    if ([self.game cardAtIndex:index].shade == 0) alpha = 0.0;
-    if ([self.game cardAtIndex:index].shade == 1) alpha = 0.2;
-    if ([self.game cardAtIndex:index].shade == 2) alpha = 1.0;
-    
-        
-    NSMutableAttributedString *content = [[NSMutableAttributedString alloc]initWithString:str attributes:@{NSForegroundColorAttributeName : [[SetViewConttroller validColor][[self.game cardAtIndex:index].color]colorWithAlphaComponent:alpha], NSStrokeWidthAttributeName : @-8,NSStrokeColorAttributeName : [SetViewConttroller validColor][[self.game cardAtIndex:index].color]}]; // need setter for shape property
-    return content;
-}
-
 
 - (void)viewDidLoad
 {
@@ -126,28 +97,40 @@
 
 -(void)updateUI // метод обновления интерфейся для синхронизации изменений в модели
 {
-    
     // Update code using collectionViewCell
+        
+        for (UICollectionViewCell *cell in [self.cardCollectionView visibleCells])
+        {
+            NSIndexPath *path = [self.cardCollectionView indexPathForCell:cell];
+            SetCard *card = [self.game cardAtIndex:path.item];
+            [self updateCell:cell usingCard:card];
+            
+            if (card.isUnPlayable)
+            {
+                [self.game.cards removeObjectAtIndex:path.item];
+                
+                if (self.deck.cards.count != 0)
+                {
+                    [self.game.cards insertObject:[self.deck drawRandomCard] atIndex:path.item];
+                    [self updateUI];
+                }
+                else
+                {
+                    // Delete cell from collectionView
+                    //[self.cardCollectionView deleteItemsAtIndexPaths:@[path]];
+                }
+                
+                // need animatio
+                
+            }
+        }
+        self.scoreLable.text = [NSString stringWithFormat:@"Score: %d",self.game.score];
     
-    for (UICollectionViewCell *cell in [self.cardCollectionView visibleCells])
-    {
-        NSIndexPath *path = [self.cardCollectionView indexPathForCell:cell];
-        SetCard *card = [self.game cardAtIndex:path.item];
-        [self updateCell:cell usingCard:card];
-    }
-
-    
-    self.scoreLable.text = [NSString stringWithFormat:@"Score: %d",self.game.score];
-    self.storyLable.attributedText = [self.game.story lastObject];
-    
-    if (self.game.endOfTheGame)
+    if ([self.game showSet].count == 0)
     {
         UIAlertView *newGameMessage = [[UIAlertView alloc]initWithTitle:@"End of the Game" message:[NSString stringWithFormat:@"%@",self.scoreLable.text] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [newGameMessage show];
-        
     }
-
-    
 }
 
 
@@ -164,7 +147,7 @@
     if (buttonIndex == 1)
     {
         self.deck = [[SetDeck alloc]init];
-        self.game = [[SetGame alloc]initWhitCardCount:24 usingDeck:self.deck];
+        self.game = [[SetGame alloc]initWhitCardCount:12 usingDeck:self.deck];
         [self updateUI];
     }
 }
@@ -183,4 +166,29 @@
     
     
 }
+- (IBAction)showSet:(UIButton *)sender
+{
+    if ([self.game showSet].count == 0)
+    {
+        UIAlertView *newGameMessage = [[UIAlertView alloc]initWithTitle:@"End of the Game" message:[NSString stringWithFormat:@"%@",self.scoreLable.text] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [newGameMessage show];
+    }
+    else
+    {
+        for (NSNumber *number in [self.game showSet])
+        {
+            NSIndexPath *path = [NSIndexPath indexPathForRow:[number intValue] inSection:0];
+            UICollectionViewCell *cell = [self.cardCollectionView cellForItemAtIndexPath:path];
+            NSLog(@"%@",path);
+            if ([cell isKindOfClass:[SetCardCollectionViewCell class]])
+            {
+                SetCardCollectionViewCell *setCell = (SetCardCollectionViewCell *)cell;
+                setCell.setCardView.faceUp = YES;
+            }
+
+        }
+
+    }
+}
+
 @end
